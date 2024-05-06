@@ -7,7 +7,7 @@ import FormField from '../../components/FormField'
 import { createUser } from '../../lib/appwrite'
 import CustomButton from '../../components/CustomButton'
 import { Link, router } from 'expo-router'
-// import { useGlobalContext } from '../../context/GlobalProvider'
+import { useGlobalContext } from '../../context/GlobalProvider'
 const SignUp = () => {
   const [form, setForm] = useState({
     username: '',
@@ -16,7 +16,7 @@ const SignUp = () => {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
-  // const { setUser, setIsLoggedIn } = useGlobalContext();
+  const { setUser, setIsLoggedIn } = useGlobalContext();
 
   const submit = async () => {
     if (!form.username || !form.email || !form.password) {
