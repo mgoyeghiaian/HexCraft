@@ -1,12 +1,13 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, Alert, Keyboard } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { images } from '../../constants'
 import FormField from '../../components/FormField'
-
+import { createUser } from '../../lib/appwrite'
 import CustomButton from '../../components/CustomButton'
-import { Link } from 'expo-router'
+import { Link, router } from 'expo-router'
+// import { useGlobalContext } from '../../context/GlobalProvider'
 const SignUp = () => {
   const [form, setForm] = useState({
     username: '',
@@ -15,8 +16,24 @@ const SignUp = () => {
   })
 
   const [isSubmitting, setIsSubmitting] = useState(false)
+  // const { setUser, setIsLoggedIn } = useGlobalContext();
 
-  const submit = () => {
+  const submit = async () => {
+    if (!form.username || !form.email || !form.password) {
+      Alert.alert('Error', 'Please fill in all the fields')
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const result = await createUser(form.email, form.password, form.username);
+      setUser(result);
+      setIsLoggedIn(true);
+      router.replace('/sign-in')
+    } catch (error) {
+      Alert.alert('Error', error.message)
+    } finally {
+      setIsSubmitting(false);
+    }
 
   }
   return (
@@ -26,7 +43,7 @@ const SignUp = () => {
           <Image
             className='w-[115px] h-[35px]'
             source={images.logo}
-            resizeMode='containg'
+            resizeMode="contain"
           />
           <Text className='text-xl text-white text-semibold mt-10 font-semibold'>
             Sign Up to Aora
@@ -59,10 +76,9 @@ const SignUp = () => {
               password: e
             })}
             otherStyles="mt-7"
-            keboardType="email-address"
           />
           <CustomButton
-            title='Sign In'
+            title='Sign Up'
             handlePress={submit}
             containerStyles="mt-7"
             isLoading={isSubmitting}
