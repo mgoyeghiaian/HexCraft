@@ -8,9 +8,11 @@ import EmptyState from '../../components/EmptyState'
 import useAppwrite from '../../lib/useAppwrie'
 import { getAllPost, getLatestPosts } from '../../lib/appwrite'
 import VideoCard from '../../components/VideoCard'
+import { useGlobalContext } from '../../context/GlobalProvider'
 const Home = () => {
   const { data: posts, refetch } = useAppwrite(getAllPost);
   const { data: latestPosts } = useAppwrite(getLatestPosts);
+  const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
   const [refreshing, setRefreshing] = useState(false)
   const onRefresh = async () => {
@@ -22,7 +24,6 @@ const Home = () => {
     <SafeAreaView className='bg-primary h-full'>
       <FlatList
         data={posts}
-        // data={[]}
         keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <VideoCard
@@ -37,7 +38,7 @@ const Home = () => {
                   Welcome Back
                 </Text>
                 <Text className="text-2xl font-psemibold text-white">
-                  Mgo
+                  {user?.username}
                 </Text>
               </View>
               <View className='mt-1.5'>
